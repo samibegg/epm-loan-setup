@@ -1,134 +1,81 @@
-# Loan State: {h40430907-3d20-497e-94ef-323c9426ab9b}
-
-## Meta
-```yaml
-loan_id: "{h40430907-3d20-497e-94ef-323c9426ab9b}"
-workflow: "FHA_Eligibility"
-version: "2.0"
-status: "in_progress"
-created: "{TIMESTAMP}"
-last_updated: "{TIMESTAMP}"
-current_step: "2"
-next_step: "3"
-total_steps: 8
-```
-
-## Loan Snapshot
-```yaml
-# Populated from Encompass on first evaluation
-program: "FHA"
-transaction_type: "Purchase"
-decision_credit_score: 564
-ltv: 0
-cltv: 0
-front_dti: 0
-back_dti: 0
-aus_recommendation: ""
-underwriting_method: ""
-gift_funds_used: false
-gift_amount: 0
-pitia_reserves_months: 0
-ownership_months: 0
-```
-
-## Decision Flow Progress
-
-### ✅ Step 0: Confirm Program
-**Status**: PASSED
-**Result**: ✓ Loan program is FHA - PASS
-**Tool Used**: FHA_LOAN
-
-### ✅ Step 1: Identify Transaction Type
-**Status**: PASSED
-**Result**: ✓ Transaction type: Purchase → LTV rules: Step 3A
-**Tool Used**: TRANSACTION_TYPE
-
-### ✅ Step 2: Credit Score Floor
-**Status**: PASSED
-**Result**: ✓ Credit score 564 >= 500 - PASS (Max LTV: 90%)
-**Credit Tier**: Low
-**Tool Used**: CHECK_CREDIT_SCORE
-
-### ⏳ Step 3: LTV/CLTV Eligibility
-**Status**: NOT_STARTED
-**Note**: Requires LTV/CLTV data - No tool available
-
-### ⏳ Step 4: Underwriting Path
-**Status**: NOT_STARTED
-**Note**: Requires AUS/underwriting data - No tool available
-
-### ⏳ Step 5: DTI Gate (AUS)
-**Status**: NOT_STARTED
-**Note**: Requires DTI data - No tool available
-
-### ⏳ Step 6: DTI Gate (Manual)
-**Status**: NOT_STARTED
-**Note**: Requires DTI data - No tool available
-
-### ⏳ Step 7: Final Eligibility
-**Status**: NOT_STARTED
-
-## Conditions Tracker
-```yaml
-conditions_evaluated:
-  - step: "0"
-    condition: "Loan program must be FHA"
-    result: "PASSED"
-  - step: "1"
-    condition: "Identify transaction type"
-    result: "PASSED - Purchase"
-  - step: "2"
-    condition: "Credit score >= 500"
-    result: "PASSED - Score: 564, Max LTV: 90%"
-pending_conditions:
-  - step: "3"
-    condition: "LTV/CLTV must meet FHA limits for Purchase"
-  - step: "4"
-    condition: "Determine underwriting path (AUS vs Manual)"
-```
-
-## Flags & Exceptions
-```yaml
-warnings:
-  - "Credit score 564 is in 'low' tier - Max LTV capped at 90%"
-exceptions: []
-ineligibility_reasons: []
-```
-
-## AI Agent Context
-```yaml
-last_evaluated_step: "2"
-last_evaluation_time: "{TIMESTAMP}"
-next_action: "Proceed to Step 3 - LTV/CLTV Eligibility (requires additional tools/data)"
-data_retrieved: true
-tools_exhausted: true
-```
-
-## Execution Log
-```yaml
-runs:
-  - run_id: 1
-    timestamp: "{TIMESTAMP}"
-    steps_processed: ["0", "1", "2"]
-    tools_called:
-      - tool: "FHA_LOAN"
-        step: "0"
-        result: "PASSED"
-      - tool: "TRANSACTION_TYPE"
-        step: "1"
-        result: "PASSED - Purchase"
-      - tool: "CHECK_CREDIT_SCORE"
-        step: "2"
-        result: "PASSED - Score 564"
-    outcome: "Completed 3 steps; awaiting additional tools for Steps 3-7"
-```
-
----
-## Summary
-**Status**: In Progress - Steps 0-2 Complete  
-**Next Step**: Step 3 - LTV/CLTV Eligibility (requires additional tools)  
-**Progress**: 37.5% (3/8 steps complete)  
-**Key Findings**:
-- ✅ FHA Program Confirmed
-- ✅ Transaction Type: Purchase
-- ✅ Credit Score: 564 (Low tier, Max LTV 90%)
+{
+  "loan_id": "h40430907-3d20-497e-94ef-323c9426ab9b",
+  "workflow_name": "Master FHA Eligibility Action Tree",
+  "workflow_version": "2.0",
+  "current_status": "IN_PROGRESS",
+  "last_updated": "2024-01-XX",
+  "completed_steps": [
+    {
+      "step_id": "0",
+      "step_name": "Confirm Program",
+      "status": "PASSED",
+      "result": "Loan is FHA",
+      "action_taken": "Continue to Step 1",
+      "is_eligible": true
+    },
+    {
+      "step_id": "1",
+      "step_name": "Identify Transaction Type",
+      "status": "PASSED",
+      "result": "Purchase",
+      "transaction_type": "Purchase",
+      "applicable_ltv_step": "3A",
+      "action_taken": "Continue to Step 2"
+    },
+    {
+      "step_id": "2",
+      "step_name": "Credit Score Floor",
+      "status": "PASSED",
+      "decision_credit_score": 529,
+      "credit_tier": "low",
+      "result": "Decision Credit Score >= 500",
+      "is_eligible": true,
+      "action_taken": "Continue to Step 3",
+      "notes": "FICO 500-579 tier - Max LTV capped at 90%"
+    }
+  ],
+  "pending_steps": [
+    {
+      "step_id": "3",
+      "sub_step_id": "3A",
+      "step_name": "PURCHASE LTV",
+      "status": "PENDING",
+      "requirements": "Verify LTV <= 90% (due to FICO 500-579 tier)",
+      "notes": "Credit score 529 requires LTV <= 90% for eligibility"
+    },
+    {
+      "step_id": "4",
+      "step_name": "Underwriting Path",
+      "status": "PENDING",
+      "requirements": "Determine AUS or Manual Underwrite path"
+    },
+    {
+      "step_id": "5 or 6",
+      "step_name": "DTI Gate",
+      "status": "PENDING",
+      "requirements": "Depends on underwriting path determination"
+    },
+    {
+      "step_id": "7",
+      "step_name": "ELIGIBLE TO SUBMIT",
+      "status": "PENDING",
+      "requirements": "Final validation of all checks"
+    }
+  ],
+  "loan_data_captured": {
+    "loan_program": "FHA",
+    "transaction_type": "Purchase",
+    "decision_credit_score": 529,
+    "credit_tier": "low (500-579)",
+    "max_ltv_allowed": "90%"
+  },
+  "next_action_required": {
+    "step": "3A - PURCHASE LTV",
+    "action": "Verify LTV <= 90% for FICO 500-579 borrower",
+    "tools_needed": "LTV verification tool (not currently available)"
+  },
+  "alerts": [
+    "⚠️ Low credit tier (529) - Maximum LTV restricted to 90%",
+    "⚠️ Borrower must provide minimum 10% down payment"
+  ]
+}
