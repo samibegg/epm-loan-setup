@@ -1,98 +1,58 @@
-# Loan State: {g0430907-3d20-497e-94ef-323c9426ab9b}
-
-## Meta
-loan_id: "g0430907-3d20-497e-94ef-323c9426ab9b"
-workflow: "FHA_Eligibility"
-version: "2.0"
-status: "in_progress"
-created: "{TIMESTAMP}"
-last_updated: "{TIMESTAMP}"
-current_step: "2"
-next_step: "3"
-total_steps: 8
-
-## Loan Snapshot
-program: "FHA"
-transaction_type: "Rate/Term Refi (Non-Streamlined)"
-decision_credit_score: 582
-credit_tier: "mid"
-max_ltv_allowed: 96.5
-ltv: 0  # Pending evaluation
-cltv: 0  # Pending evaluation
-front_dti: 0
-back_dti: 0
-aus_recommendation: ""
-underwriting_method: ""
-gift_funds_used: false
-gift_amount: 0
-pitia_reserves_months: 0
-ownership_months: 0
-
-## Decision Flow Progress
-
-### ✅ Step 0: Confirm Program
-**Status**: PASSED
-**Result**: Loan program is FHA ✓
-
-### ✅ Step 1: Identify Transaction Type
-**Status**: PASSED
-**Result**: Rate/Term Refi (Non-Streamlined) → LTV rules: Step 3B ✓
-
-### ✅ Step 2: Credit Score Floor
-**Status**: PASSED
-**Result**: Credit score 582 >= 500 minimum ✓ (Max LTV: 96.5%)
-
-### ⏳ Step 3: LTV/CLTV Eligibility
-**Status**: NOT_STARTED
-**Note**: Will use Step 3B rules for Rate/Term Refinance
-
-### ⏳ Step 4: Underwriting Path
-**Status**: NOT_STARTED
-
-### ⏳ Step 5: DTI Gate (AUS)
-**Status**: NOT_STARTED
-
-### ⏳ Step 6: DTI Gate (Manual)
-**Status**: NOT_STARTED
-
-### ⏳ Step 7: Final Eligibility
-**Status**: NOT_STARTED
-
-## Conditions Tracker
-conditions_evaluated:
-  - step: "0"
-    condition: "Loan program must be FHA"
-    result: "PASSED"
-  - step: "1"
-    condition: "Identify transaction type"
-    result: "PASSED - Rate/Term Refi (Non-Streamlined)"
-  - step: "2"
-    condition: "Credit score >= 500"
-    result: "PASSED - Score: 582"
-pending_conditions:
-  - step: "3"
-    condition: "LTV/CLTV within limits for Rate/Term Refi"
-
-## Flags & Exceptions
-warnings: []
-exceptions: []
-ineligibility_reasons: []
-
-## AI Agent Context
-last_evaluated_step: "2"
-last_evaluation_time: "{TIMESTAMP}"
-next_action: "Evaluate Step 3 - LTV/CLTV Eligibility using Step 3B rules"
-data_retrieved: true
-
-## Execution Log
-runs:
-  - run_id: 1
-    timestamp: "{TIMESTAMP}"
-    steps_processed: ["0", "1", "2"]
-    tools_invoked:
-      - FHA_LOAN: "PASSED - Program is FHA"
-      - TRANSACTION_TYPE: "PASSED - Rate/Term Refi (Non-Streamlined)"
-      - CHECK_CREDIT_SCORE: "PASSED - Score 582, Max LTV 96.5%"
-    email_sent: true
-
-## Progress: 37.5% (3/8 steps complete)
+{
+  "loan_id": "g0430907-3d20-497e-94ef-323c9426ab9b",
+  "current_step": "3B",
+  "status": "IN_PROGRESS",
+  "steps_completed": [
+    {
+      "step_id": "0",
+      "step_name": "Confirm Program",
+      "status": "PASSED",
+      "result": "Loan is FHA - Eligible to continue"
+    },
+    {
+      "step_id": "1",
+      "step_name": "Identify Transaction Type",
+      "status": "PASSED",
+      "result": "Rate/Term Refi (Non-Streamlined)",
+      "applicable_ltv_step": "3B"
+    },
+    {
+      "step_id": "2",
+      "step_name": "Credit Score Floor",
+      "status": "PASSED",
+      "result": "Decision Credit Score 582 >= 500 minimum"
+    }
+  ],
+  "eligibility_status": "CONDITIONALLY_ELIGIBLE",
+  "data_collected": {
+    "loan_program": "FHA",
+    "is_fha": true,
+    "transaction_type": "Rate/Term Refi (Non-Streamlined)",
+    "decision_credit_score": 582,
+    "credit_tier": "mid",
+    "max_ltv_allowed": 97.75
+  },
+  "next_steps_required": [
+    {
+      "step_id": "3B",
+      "step_name": "LTV/CLTV Validation (Rate/Term Refi)",
+      "requirements": "Verify LTV/CLTV ≤ 97.75% (FICO ≥ 580)"
+    },
+    {
+      "step_id": "4",
+      "step_name": "Underwriting Path",
+      "requirements": "Determine AUS or Manual Underwrite"
+    },
+    {
+      "step_id": "5 or 6",
+      "step_name": "DTI Gate",
+      "requirements": "Validate DTI based on underwriting path"
+    },
+    {
+      "step_id": "7",
+      "step_name": "Final Eligibility",
+      "requirements": "Confirm all checks passed for submission"
+    }
+  ],
+  "email_notification_sent": true
+}
