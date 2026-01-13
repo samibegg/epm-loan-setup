@@ -3,7 +3,7 @@
   "workflow": "Master FHA Eligibility Action Tree",
   "version": "2.0",
   "current_step": "3A",
-  "status": "IN_PROGRESS",
+  "status": "IN_PROGRESS - AWAITING DATA",
   "steps_completed": [
     {
       "step_id": "0",
@@ -30,6 +30,16 @@
       "timestamp": "2024-01-XX"
     }
   ],
+  "processing_notes": {
+    "last_processed": "2024-01-XX",
+    "tools_invoked": [
+      "FHA_LOAN - Confirmed FHA program",
+      "CHECK_CREDIT_SCORE - Verified credit score on file",
+      "TRANSACTION_TYPE - Confirmed Purchase transaction",
+      "EMAIL-TOOL - Status update sent"
+    ],
+    "blocking_issue": "Missing required data: LTV, CLTV, DTI, Underwriting Path"
+  },
   "loan_data": {
     "program": "FHA",
     "transaction_type": "Purchase",
@@ -46,24 +56,33 @@
     {
       "step_id": "3A",
       "step_name": "Purchase LTV Validation",
-      "requirement": "Verify LTV ≤ 96.50% (FICO ≥ 580)"
+      "requirement": "Verify LTV ≤ 96.50% (FICO ≥ 580)",
+      "status": "BLOCKED - LTV value not provided"
     },
     {
       "step_id": "4",
       "step_name": "Underwriting Path",
-      "requirement": "Determine AUS or Manual Underwrite"
+      "requirement": "Determine AUS or Manual Underwrite",
+      "status": "BLOCKED - Underwriting path not determined"
     },
     {
       "step_id": "5",
       "step_name": "DTI Gate (AUS)",
-      "requirement": "Validate DTI and Purchase overlays"
+      "requirement": "Validate DTI and Purchase overlays",
+      "status": "BLOCKED - DTI value not provided"
     },
     {
       "step_id": "7",
       "step_name": "Final Eligibility",
-      "requirement": "Confirm all requirements for submission"
+      "requirement": "Confirm all requirements for submission",
+      "status": "PENDING"
     }
   ],
   "eligibility": "PENDING - Awaiting LTV/DTI Validation",
-  "email_sent": true
+  "email_sent": true,
+  "email_log": {
+    "last_email_sent": "2024-01-XX",
+    "email_type": "Status Update - Data Request",
+    "summary": "Notified stakeholders of completed steps (0, 1, 2) and requested missing data (LTV, CLTV, DTI, Underwriting Path)"
+  }
 }
