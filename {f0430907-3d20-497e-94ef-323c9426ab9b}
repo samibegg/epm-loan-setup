@@ -1,105 +1,69 @@
-# Loan State: {f0430907-3d20-497e-94ef-323c9426ab9b}
-
-## Meta
-loan_id: "f0430907-3d20-497e-94ef-323c9426ab9b"
-workflow: "FHA_Eligibility"
-version: "2.0"
-status: "in_progress"
-created: "{TIMESTAMP}"
-last_updated: "{CURRENT_TIMESTAMP}"
-current_step: "2"
-next_step: "3"
-total_steps: 8
-
-## Loan Snapshot
-program: "FHA"
-transaction_type: "Purchase"
-decision_credit_score: 797
-ltv: 0
-cltv: 0
-front_dti: 0
-back_dti: 0
-aus_recommendation: ""
-underwriting_method: ""
-gift_funds_used: false
-gift_amount: 0
-pitia_reserves_months: 0
-ownership_months: 0
-max_ltv_allowed: 96.5
-credit_tier: "good"
-
-## Decision Flow Progress
-
-### ✅ Step 0: Confirm Program
-**Status**: PASSED
-**Result**: Loan program is FHA ✓
-
-### ✅ Step 1: Identify Transaction Type
-**Status**: PASSED
-**Result**: Transaction type: Purchase → LTV rules: Step 3A ✓
-
-### ✅ Step 2: Credit Score Floor
-**Status**: PASSED
-**Result**: Credit score 797 >= 500 - PASS (Max LTV: 96.5%) ✓
-
-### ⏳ Step 3: LTV/CLTV Eligibility
-**Status**: NOT_STARTED
-
-### ⏳ Step 4: Underwriting Path
-**Status**: NOT_STARTED
-
-### ⏳ Step 5: DTI Gate (AUS)
-**Status**: NOT_STARTED
-
-### ⏳ Step 6: DTI Gate (Manual)
-**Status**: NOT_STARTED
-
-### ⏳ Step 7: Final Eligibility
-**Status**: NOT_STARTED
-
-## Conditions Tracker
-conditions_evaluated:
-  - step: "0"
-    condition: "Loan program must be FHA"
-    result: "PASSED"
-  - step: "1"
-    condition: "Identify transaction type"
-    result: "PASSED - Purchase"
-  - step: "2"
-    condition: "Credit score >= 500"
-    result: "PASSED - Score: 797"
-pending_conditions:
-  - step: "3"
-    condition: "LTV/CLTV must meet Purchase guidelines (Step 3A)"
-
-## Flags & Exceptions
-warnings: []
-exceptions: []
-ineligibility_reasons: []
-
-## AI Agent Context
-last_evaluated_step: "2"
-last_evaluation_time: "{CURRENT_TIMESTAMP}"
-next_action: "Evaluate Step 3 - LTV/CLTV Eligibility using Step 3A (Purchase) rules"
-data_retrieved: true
-
-## Execution Log
-runs:
-  - run_id: 1
-    timestamp: "{CURRENT_TIMESTAMP}"
-    steps_processed: ["0", "1", "2"]
-    tools_invoked:
-      - tool: "FHA_LOAN"
-        result: "PASSED - Program is FHA"
-      - tool: "TRANSACTION_TYPE"
-        result: "PASSED - Purchase transaction"
-      - tool: "CHECK_CREDIT_SCORE"
-        result: "PASSED - Score 797, Max LTV 96.5%"
-      - tool: "EMAIL-TOOL"
-        result: "Summary email sent successfully"
-
----
-## Summary
-**Status**: In Progress - First 3 steps completed successfully  
-**Next Step**: Step 3 - LTV/CLTV Eligibility (Purchase rules - Step 3A)  
-**Progress**: 37.5% (3/8 steps complete)
+{
+  "loan_id": "f0430907-3d20-497e-94ef-323c9426ab9b",
+  "workflow": "Master FHA Eligibility Action Tree",
+  "version": "2.0",
+  "current_step": "3A",
+  "status": "IN_PROGRESS",
+  "steps_completed": [
+    {
+      "step_id": "0",
+      "step_name": "Confirm Program",
+      "status": "PASSED",
+      "result": "Loan is registered as FHA",
+      "timestamp": "2024-01-XX"
+    },
+    {
+      "step_id": "1",
+      "step_name": "Identify Transaction Type",
+      "status": "PASSED",
+      "result": "Purchase",
+      "next_ltv_step": "3A",
+      "timestamp": "2024-01-XX"
+    },
+    {
+      "step_id": "2",
+      "step_name": "Credit Score Floor",
+      "status": "PASSED",
+      "result": "Credit Score 797 >= 500 minimum",
+      "credit_tier": "good",
+      "max_ltv_allowed": "96.5%",
+      "timestamp": "2024-01-XX"
+    }
+  ],
+  "loan_data": {
+    "program": "FHA",
+    "transaction_type": "Purchase",
+    "decision_credit_score": 797,
+    "credit_tier": "good",
+    "max_ltv_allowed": 96.5,
+    "ltv": null,
+    "cltv": null,
+    "dti": null,
+    "underwriting_path": null,
+    "gift_funds_used": null
+  },
+  "next_steps_required": [
+    {
+      "step_id": "3A",
+      "step_name": "Purchase LTV Validation",
+      "requirement": "Verify LTV ≤ 96.50% (FICO ≥ 580)"
+    },
+    {
+      "step_id": "4",
+      "step_name": "Underwriting Path",
+      "requirement": "Determine AUS or Manual Underwrite"
+    },
+    {
+      "step_id": "5",
+      "step_name": "DTI Gate (AUS)",
+      "requirement": "Validate DTI and Purchase overlays"
+    },
+    {
+      "step_id": "7",
+      "step_name": "Final Eligibility",
+      "requirement": "Confirm all requirements for submission"
+    }
+  ],
+  "eligibility": "PENDING - Awaiting LTV/DTI Validation",
+  "email_sent": true
+}
