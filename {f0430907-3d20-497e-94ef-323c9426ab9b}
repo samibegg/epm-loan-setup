@@ -1,24 +1,22 @@
-# Loan State: {LOAN_ID}
+# Loan State: {f0430907-3d20-497e-94ef-323c9426ab9b}
 
 ## Meta
-```yaml
-loan_id: "{LOAN_ID}"
+loan_id: "f0430907-3d20-497e-94ef-323c9426ab9b"
 workflow: "FHA_Eligibility"
 version: "2.0"
-status: "new"
+status: "in_progress"
 created: "{TIMESTAMP}"
-last_updated: "{TIMESTAMP}"
-current_step: null
-next_step: "0"
+last_updated: "{CURRENT_TIMESTAMP}"
+current_step: "2"
+next_step: "3"
 total_steps: 8
-```
 
 ## Loan Snapshot
-```yaml
-# Populated from Encompass on first evaluation
-program: ""
-transaction_type: ""
-decision_credit_score: 0
+program: "FHA"
+transaction_type: "Purchase"
+decision_credit_score: 591
+credit_tier: "mid"
+max_ltv_allowed: 96.5
 ltv: 0
 cltv: 0
 front_dti: 0
@@ -29,18 +27,24 @@ gift_funds_used: false
 gift_amount: 0
 pitia_reserves_months: 0
 ownership_months: 0
-```
 
 ## Decision Flow Progress
 
-### ⏳ Step 0: Confirm Program
-**Status**: NOT_STARTED
+### ✅ Step 0: Confirm Program
+**Status**: PASSED
+**Result**: Loan program is FHA - PASS
+**Evaluated**: {CURRENT_TIMESTAMP}
 
-### ⏳ Step 1: Identify Transaction Type
-**Status**: NOT_STARTED
+### ✅ Step 1: Identify Transaction Type
+**Status**: PASSED
+**Result**: Transaction type: Purchase → LTV rules: Step 3A
+**Evaluated**: {CURRENT_TIMESTAMP}
 
-### ⏳ Step 2: Credit Score Floor
-**Status**: NOT_STARTED
+### ✅ Step 2: Credit Score Floor
+**Status**: PASSED
+**Result**: Credit score 591 >= 500 - PASS (Max LTV: 96.5%)
+**Credit Tier**: Mid
+**Evaluated**: {CURRENT_TIMESTAMP}
 
 ### ⏳ Step 3: LTV/CLTV Eligibility
 **Status**: NOT_STARTED
@@ -58,35 +62,49 @@ ownership_months: 0
 **Status**: NOT_STARTED
 
 ## Conditions Tracker
-```yaml
-conditions_evaluated: []
-pending_conditions:
+conditions_evaluated:
   - step: "0"
     condition: "Loan program must be FHA"
-```
+    result: "PASSED"
+  - step: "1"
+    condition: "Identify transaction type"
+    result: "PASSED - Purchase"
+  - step: "2"
+    condition: "Credit score >= 500"
+    result: "PASSED - Score 591, Max LTV 96.5%"
+pending_conditions:
+  - step: "3"
+    condition: "LTV/CLTV within limits for Purchase (Step 3A)"
 
 ## Flags & Exceptions
-```yaml
 warnings: []
 exceptions: []
 ineligibility_reasons: []
-```
 
 ## AI Agent Context
-```yaml
-last_evaluated_step: null
-last_evaluation_time: null
-next_action: "Begin evaluation at Step 0 - Confirm Program"
-data_retrieved: false
-```
+last_evaluated_step: "2"
+last_evaluation_time: "{CURRENT_TIMESTAMP}"
+next_action: "Evaluate Step 3 - LTV/CLTV Eligibility (Purchase rules - Step 3A)"
+data_retrieved: true
 
 ## Execution Log
-```yaml
-runs: []
-```
+runs:
+  - run_id: 1
+    timestamp: "{CURRENT_TIMESTAMP}"
+    steps_processed: ["0", "1", "2"]
+    results:
+      - step: "0"
+        tool: "FHA_LOAN"
+        status: "PASSED"
+        message: "✓ Loan program is FHA - PASS"
+      - step: "1"
+        tool: "TRANSACTION_TYPE"
+        status: "PASSED"
+        message: "✓ Transaction type: Purchase → LTV rules: Step 3A"
+      - step: "2"
+        tool: "CHECK_CREDIT_SCORE"
+        status: "PASSED"
+        message: "✓ Credit score 591 >= 500 - PASS (Max LTV: 96.5%)"
+    email_sent: true
 
----
-## Summary
-**Status**: New loan - awaiting first evaluation  
-**Next Step**: Step 0 - Confirm Program  
-**Progress**: 0% (0/8 steps complete)
+## Progress: 37.5% (3/8 steps complete)
