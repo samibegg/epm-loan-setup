@@ -1,93 +1,45 @@
-# Loan State: {h10430907-3d20-497e-94ef-323c9426ab9b}
-
-## Meta
-loan_id: "{h10430907-3d20-497e-94ef-323c9426ab9b}"
-workflow: "FHA_Eligibility"
-version: "2.0"
-status: "ineligible"
-created: "{TIMESTAMP}"
-last_updated: "{TIMESTAMP}"
-current_step: "0"
-next_step: null
-total_steps: 8
-
-## Loan Snapshot
-program: "Conventional"
-transaction_type: ""
-decision_credit_score: 0
-ltv: 0
-cltv: 0
-front_dti: 0
-back_dti: 0
-aus_recommendation: ""
-underwriting_method: ""
-gift_funds_used: false
-gift_amount: 0
-pitia_reserves_months: 0
-ownership_months: 0
-
-## Decision Flow Progress
-
-### ❌ Step 0: Confirm Program
-**Status**: FAILED
-**Result**: Loan program is Conventional - not FHA
-**Message**: "✗ Loan program is Conventional - FAIL (not FHA)"
-
-### ⏳ Step 1: Identify Transaction Type
-**Status**: NOT_STARTED (blocked - Step 0 failed)
-
-### ⏳ Step 2: Credit Score Floor
-**Status**: NOT_STARTED (blocked - Step 0 failed)
-
-### ⏳ Step 3: LTV/CLTV Eligibility
-**Status**: NOT_STARTED (blocked - Step 0 failed)
-
-### ⏳ Step 4: Underwriting Path
-**Status**: NOT_STARTED (blocked - Step 0 failed)
-
-### ⏳ Step 5: DTI Gate (AUS)
-**Status**: NOT_STARTED (blocked - Step 0 failed)
-
-### ⏳ Step 6: DTI Gate (Manual)
-**Status**: NOT_STARTED (blocked - Step 0 failed)
-
-### ⏳ Step 7: Final Eligibility
-**Status**: NOT_STARTED (blocked - Step 0 failed)
-
-## Conditions Tracker
-conditions_evaluated:
-  - step: "0"
-    condition: "Loan program must be FHA"
-    result: "FAILED"
-    actual_value: "Conventional"
-pending_conditions: []
-
-## Flags & Exceptions
-warnings: []
-exceptions: []
-ineligibility_reasons:
-  - "Loan program is Conventional, not FHA. This workflow is for FHA loans only."
-
-## AI Agent Context
-last_evaluated_step: "0"
-last_evaluation_time: "{TIMESTAMP}"
-next_action: "STOP - Loan is ineligible for FHA workflow"
-data_retrieved: true
-
-## Execution Log
-runs:
-  - run_id: 1
-    timestamp: "{TIMESTAMP}"
-    steps_attempted: ["0"]
-    steps_completed: ["0"]
-    outcome: "FAILED at Step 0"
-    tools_called:
-      - tool: "FHA_LOAN"
-        result: "FAILED - Program is Conventional, not FHA"
-
----
-## Summary
-**Status**: INELIGIBLE - Loan program is not FHA  
-**Next Step**: None - workflow terminated  
-**Progress**: 12.5% (1/8 steps evaluated, 0 passed)
-**Reason**: This is a Conventional loan and cannot proceed through the FHA Eligibility workflow.
+{
+  "loan_id": "h10430907-3d20-497e-94ef-323c9426ab9b",
+  "current_step": "3A",
+  "step_name": "PURCHASE LTV",
+  "status": "IN_PROGRESS",
+  "completed_steps": [
+    {
+      "step_id": "0",
+      "step_name": "Confirm Program",
+      "status": "PASSED",
+      "result": "Loan program is FHA - PASS",
+      "action": "Continue to Step 1"
+    },
+    {
+      "step_id": "1",
+      "step_name": "Identify Transaction Type",
+      "status": "PASSED",
+      "result": "Transaction type: Purchase",
+      "ltv_rules_applicable": "Step 3A",
+      "action": "Continue to Step 2"
+    },
+    {
+      "step_id": "2",
+      "step_name": "Credit Score Floor",
+      "status": "PASSED",
+      "result": "Credit score 538 >= 500 - PASS",
+      "action": "Continue to Step 3"
+    }
+  ],
+  "loan_data": {
+    "loan_program": "FHA",
+    "transaction_type": "Purchase",
+    "decision_credit_score": 538,
+    "credit_tier": "low",
+    "max_ltv_allowed": "90%",
+    "ltv_sub_step": "3A"
+  },
+  "next_action_required": {
+    "step": "3A",
+    "description": "PURCHASE LTV Validation",
+    "rule": "FICO 500-579 requires LTV <= 90%",
+    "data_needed": "Current LTV value to validate against 90% maximum"
+  },
+  "notes": "Credit score 538 falls in FICO 500-579 range. Per Step 3A, LTV must be <= 90% for eligibility. Awaiting LTV data to complete Step 3A validation."
+}
